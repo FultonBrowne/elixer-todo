@@ -13,12 +13,12 @@ defmodule TodoApp.Todos do
 
   ## Examples
 
-      iex> list_todos()
+      iex> list_todos(user_id)
       [%Todo{}, ...]
 
   """
-  def list_todos do
-    Repo.all(Todo)
+  def list_todos(user_id) do
+    Repo.all(from t in Todo, where: t.user_id == ^user_id)
   end
 
   @doc """
@@ -28,14 +28,16 @@ defmodule TodoApp.Todos do
 
   ## Examples
 
-      iex> get_todo!(123)
+      iex> get_todo!(123, user_id)
       %Todo{}
 
-      iex> get_todo!(456)
+      iex> get_todo!(456, user_id)
       ** (Ecto.NoResultsError)
 
   """
-  def get_todo!(id), do: Repo.get!(Todo, id)
+  def get_todo!(id, user_id) do
+    Repo.get_by!(Todo, id: id, user_id: user_id)
+  end
 
   @doc """
   Creates a todo.
@@ -49,9 +51,9 @@ defmodule TodoApp.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_todo(attrs \\ %{}) do
+  def create_todo(attrs \\ %{}, user) do
     %Todo{}
-    |> Todo.changeset(attrs)
+    |> Todo.changeset(Map.put(attrs, "user_id", user.id))
     |> Repo.insert()
   end
 

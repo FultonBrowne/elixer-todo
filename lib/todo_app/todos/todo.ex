@@ -5,6 +5,8 @@ defmodule TodoApp.Todos.Todo do
   schema "todos" do
     field :title, :string
     field :completed, :boolean, default: false
+    # Associate with User
+    belongs_to :user, TodoApp.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
@@ -12,7 +14,7 @@ defmodule TodoApp.Todos.Todo do
   @doc false
   def changeset(todo, attrs) do
     todo
-    |> cast(attrs, [:title, :completed])
-    |> validate_required([:title, :completed])
+    |> cast(attrs, [:title, :completed, :user_id])
+    |> validate_required([:title, :completed, :user_id])
   end
 end
